@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Basic jHerc Usage</title>
+</head>
+<body>
+<h3>Sites</h3>
+<ol id="the_sites"></ol>
+<h3>Posts</h3>
+<ol id="the_posts"></ol>
+<h3>Tasks</h3>
+<ol id="the_tasks"></ol>
+<h3>Users</h3>
+<ol id="the_users"></ol>
+<button id="fb_login">Log in with FB</button>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="../src/jHerc.js"></script>
+<script type="text/javascript">
+    $.herc.configure({
+        api_key: 'APIKEYGOESHERE' //you can get an API Key at http://hercdev.io
+    });
+
+    $('#fb_login').fbLoginButton();
+
+    $.herc.Objects().getAll(
+            {type: 'site'},
+            function( response ){
+                console.log('i got ' + response.length + ' results!');
+            },
+            function(){
+                console.log('i was a failure :(');
+            }).then( function(response){
+                $.each( response, function( key, value ) {
+                    $('#the_sites').append( $('<li>').append( value.meta_data.name + ' - http://' + value.name + '.newbabe.org' ) );
+                } )
+            });
+
+    $.herc.Posts().getAll(
+            {type: 'post'},
+            function( response ) {
+                console.log('i got ' + response.length + ' results!');
+            },
+            function(){
+                console.log('i was a failure :(');
+            }).then( function(response){
+                $.each( response, function( key, value ) {
+                    $('#the_posts').append( $('<li>').append( value.title ) );
+                } )
+            });
+
+    $.herc.Tasks().getAll(
+            {},
+            function( response ) {
+                console.log('i got ' + response.length + ' results!');
+            },
+            function(){
+                $('#the_tasks').append( $('<li>').append( 'You must be logged in to view the task data' ) );
+            }).then( function(response){
+                $.each( response, function( key, value ) {
+                    $('#the_tasks').append( $('<li>').append( value.task + ' - assigned to ' + value.assignee.name ) );
+                } )
+            });
+
+    $.herc.Users().getAll(
+            {},
+            function( response ) {
+                console.log('i got ' + response.length + ' results!');
+            },
+            function(){
+                $('#the_users').append( $('<li>').append( 'You must be logged in to view the user data' ) );
+            }).then( function(response){
+                $.each( response, function( key, value ) {
+                    $('#the_users').append( $('<li>').append( $('<img>').attr( 'src', value.profile_picture).css('max-width', '50px') ).append( ' - ' + value.name + ' - ' + value.email ) );
+                } )
+            });
+</script>
+</body>
+</html>
