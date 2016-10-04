@@ -4,7 +4,7 @@ else
 {
     (function ( $ ) {
         $.herc = {
-            api_url: 'http://api.hercdev.io',
+            api_url: 'https://api.hercdev.io',
             config: {},
             fb_login_url: function() {
                 return this.api_url + '/connectFB?api_key=' + this.config.api_key;
